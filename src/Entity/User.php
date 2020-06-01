@@ -2,14 +2,23 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource
+ * 
+ * 
+ * @UniqueEntity("email",message="un utilisateur ayant cette adresse email existe déja")
+ *
  */
 class User implements UserInterface
 {
@@ -17,32 +26,49 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"customers_read","invoices_read","invoices_subresoure"})
      */
     private $id;
 
-    /**
+    /**  
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"customers_read","invoices_read","invoices_subresoure"})
+     * @Assert\NotBlank(message="l'email doit étre renseigné")
+     * @Assert\Email(message="l'adresse email doit avoir un format vlaide !")
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * 
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups({"customers_read"})
+     *  @Assert\NotBlank(message="le mot de pass est obligatoire")
+     * 
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read","invoices_read","invoices_subresoure"})
+     *  @Assert\NotBlank(message="le prénom est obligatoire")
+     * @assert\Length(min=3,minMessage="le prénom doit faire entre 3 et 255 caractéres",max=255,
+     * maxMessage="le prénom doit faire entre 3 et 255 caractéres")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read","invoices_read","invoices_subresoure"})
+     *   @Assert\NotBlank(message="le nom est obligatoire")
+     * @assert\Length(min=3,minMessage="le nom doit faire entre 3 et 255 caractéres",max=255,
+     * maxMessage="le prénom doit faire entre 3 et 255 caractéres")
      */
     private $lastName;
 
