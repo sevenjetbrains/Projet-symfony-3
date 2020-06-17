@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\InvoiceRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
@@ -9,6 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=InvoiceRepository::class)
@@ -44,7 +46,7 @@ class Invoice
      * @Groups({"invoices_read","customers_read","invoices_subresoure"})
      * @Assert\NotBlank(message="le montant de la facture est obligatoire !")
      * @Assert\Type(type="numeric",message="le montant de la facture doit étre un numérique !")
-     * à
+     * 
      */
     private $amount;
 
