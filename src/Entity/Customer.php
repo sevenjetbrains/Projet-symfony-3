@@ -10,6 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
@@ -45,8 +46,7 @@ class Customer
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read","invoices_read"})
      * @Assert\NotBlank(message="le prénom de customer est obligatoire")
-     * @assert\Length(min=3,minMessage="le prénom doit faire entre 3 et 255 caractéres",max=255,
-     * maxMessage="le prénom doit faire entre 3 et 255 caractéres")
+     * 
      */
     private $firstName;
 
