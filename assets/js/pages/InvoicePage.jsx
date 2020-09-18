@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Field from "../components/forms/Field";
 import Select from "../components/forms/Select";
+import FormContentLoader from "../components/loader/FormContentLoader";
 import CustomersAPI from "../services/customersAPI";
 
 import InvoicesAPI from "../services/invoicesAPI";
@@ -19,12 +21,16 @@ const InvoicePage = ({history,match}) => {
   });
   const [editing, setEditing] = useState(false);
   const [customers, setCustomers] = useState([]);
+  const [loading,setLoading]=useState(true);
+
   const fetchCustomers = async () => {
     try {
       const data = await CustomersAPI.findAll();
       setCustomers(data);
+      setLoading(false);
       if (!invoice.customer) setInvoice({ ...invoice, customer: data[0].id });
     } catch (error) {
+      toast.error("Impossible de charger les clients");
 history.replace("/invoices") ;
     
     }
@@ -39,8 +45,9 @@ history.replace("/invoices") ;
       const { amount, status, customer } = await InvoicesAPI.find(id);
    
       setInvoice({amount,status,customer: customer.id});
+      setLoading(false);
     } catch (error) {
-      
+      toast.error("Impossible de charger la facture demandée");
       history.replace('/invoices');
       
     }
@@ -63,10 +70,12 @@ history.replace("/invoices") ;
     try {
       if(editing){
         await InvoicesAPI.update(id,invoice);
+        toast.success("la facture a bien été modifiée");
           
       }else{
 
-         await InvoicesAPI.create(invoice)
+         await InvoicesAPI.create(invoice);
+          toast.success("la facture a bien été enregistrer");
         history.replace("/invoices");
       }
     } catch ({ response }) {
@@ -77,14 +86,16 @@ history.replace("/invoices") ;
           apiErrors[propertyPath] = message;
         });
         setErrors(apiErrors);
+        toast.error("Des erreurs dans votre formulaire");
       }
     }
   };
   return (
     <>
       {(!editing && <h1>Création d'une facture</h1>) || (<h1> Modification d'une facture </h1>)}
-      <form onSubmit={handleSubmit}>
-        <Field
+    {loading && <FormContentLoader />}
+      {!loading && <form onSubmit={handleSubmit}>
+      <Field
           name="amount"
           type="number"
           placeholder="montant de la facture"
@@ -125,7 +136,7 @@ history.replace("/invoices") ;
             Retour aux factures
           </Link>
         </div>
-      </form>
+      </form>}
     </>
   );
 };

@@ -3,6 +3,8 @@ import Field from '../components/forms/Field';
 import { Link } from 'react-router-dom';
 
 import customersAPI from '../services/customersAPI';
+import { toast } from 'react-toastify';
+import FormContentLoader from '../components/loader/FormContentLoader';
 const CustomerPage = ({match,history}) => {
   const {id = "new" }=match.params;
  
@@ -20,22 +22,26 @@ const CustomerPage = ({match,history}) => {
       company: "",
     });
     const [editing,setEditing ] = useState(false);
+  const [loading, setLoading] = useState(false);
+
     const fetechCustomer = async (id) =>{
       try {
         
         const { firstName, lastName, email, company } = await customersAPI.find(id);
          
      
-        setCustomer({firstName,lastName,email,company})
+        setCustomer({firstName,lastName,email,company});
+        setLoading(false);
       } catch (error) {
+        toast.error("Le client n'a pas pu étre chargé");
  history.replace("/customers");
       }
 
     }
 
     useEffect(() => {
-      
       if(id !== "new"){
+        setLoading(true);
          setEditing(true);
          fetechCustomer(id);
 
@@ -50,16 +56,19 @@ const CustomerPage = ({match,history}) => {
     const handleSubmit=async event=>{
         event.preventDefault();
         try {
+          setErrors({});
           if(editing){
             await customersAPI.update(id,customer);
-           
+            toast.success("Le client a bien été modifié");
+            
           }else{
-
-           await customersAPI.create(customer);
+            
+            await customersAPI.create(customer);
+            toast.success("Le client a bien été créé");
               history.replace("/customers");
           }
 
-            setErrors({});
+
         } catch ({response}) {
           const {violations}=response.data;
            if(violations){
@@ -68,6 +77,7 @@ const CustomerPage = ({match,history}) => {
               {apiErrors[propertyPath]=message;}
               );
 setErrors(apiErrors);
+toast.error("Des erreurs dans votre formulaire !");
            }
         }
        
@@ -75,7 +85,8 @@ setErrors(apiErrors);
     return (
       <>
         {(!editing && <h1>Création d'un client</h1>) || (<h1>Modification du client</h1>)}
-        <form onSubmit={handleSubmit}>
+     { loading && <FormContentLoader/>}
+      {!loading &&  <form onSubmit={handleSubmit}>
           <Field
             name="lastName"
             value={customer.lastName}
@@ -115,7 +126,7 @@ setErrors(apiErrors);
               Retour à la liste
             </Link>
           </div>
-        </form>
+        </form>}
       </>
     );
 }

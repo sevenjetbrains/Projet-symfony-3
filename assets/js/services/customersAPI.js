@@ -8,7 +8,7 @@ function deleteCustomer(id){
     axios.delete("http://127.0.0.1:8000/api/customers/" + id);
 }
 function find(id){
-    axios.get("http://127.0.0.1:8000/api/customers/" + id).
+    return axios.get("http://127.0.0.1:8000/api/customers/" + id).
         then(response => response.data);
 }
 function update(id,customer){
