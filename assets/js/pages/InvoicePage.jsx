@@ -79,6 +79,7 @@ history.replace("/invoices") ;
         history.replace("/invoices");
       }
     } catch ({ response }) {
+      
       const { violations } = response.data;
       if (violations) {
         const apiErrors = {};

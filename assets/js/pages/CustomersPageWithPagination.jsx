@@ -19,7 +19,7 @@ const CostumersPageWithPagination = (props) => {
       .catch((error) => console.log(error.response));
   }, [currentPage]);
   const handleDelete = (id) => {
-    console.log(id);
+    
     const originalCustomers = [...customers];
     //
     setCustomers(customers.filter((customer) => customer.id !== id));

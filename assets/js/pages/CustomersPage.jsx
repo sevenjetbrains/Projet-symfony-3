@@ -26,7 +26,7 @@ fetchCustomers();
   
     }, []);
   const handleDelete = async (id) => {
-    console.log(id);
+  
     const originalCustomers=[...customers];
     //
     setCustomers(customers.filter(customer =>customer.id !== id));

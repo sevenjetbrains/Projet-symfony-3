@@ -1,6 +1,7 @@
 import axios from "axios";
 import CustomersAPI from "./customersAPI";
 import jwtDecode from "jwt-decode";
+import { LOGIN_API } from "../Config";
 
 function logout(){
     window.localStorage.removeItem("authToken");
@@ -22,7 +23,7 @@ function isAuthenticated(){
 }
 
 function authenticate(credentials) {
-    return axios.post("http://127.0.0.1:8000/api/login_check", credentials).then(response => response.data.token).
+    return axios.post(LOGIN_API, credentials).then(response => response.data.token).
         then(token => {
             window.localStorage.setItem("authToken", token);
  setAxiosToken(token);
